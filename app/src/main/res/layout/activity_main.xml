@@ -8,6 +8,7 @@
     android:background="@color/background_color"
     tools:context=".MainActivity">
 
+<!-- estructura principal de la actividad menu principal   -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -34,6 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
+<!--    contenedor para los botones de la actividad menu principal   -->
     <LinearLayout
         android:id="@+id/menuContainer"
         android:layout_width="0dp"
@@ -59,17 +61,5 @@
             android:elevation="4dp" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvVersion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Versión 1.0"
-        android:textSize="12sp"
-        android:textColor="@color/secondary_text_color"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
