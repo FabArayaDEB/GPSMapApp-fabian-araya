@@ -15,9 +15,9 @@ pasos
 - Clave de API de Google Maps habilitada para Android.
 
 Configuración de la API de Google Maps
-- Edita tu clave en `app/src/main/res/values/google_maps_api.xml`.
+- Edita tu clave en `app/src/main/res/values/strings.xml` (atributo `google_maps_key`).
 - Verifica el `meta-data` en `app/src/main/AndroidManifest.xml`:
-  - `android:name="com.google.android.geo.API_KEY"` debe contener clave.
+  - `android:name="com.google.android.geo.API_KEY"` debe referenciar `@string/google_maps_key`.
 
 Pasos para ejecutar
 1) Clonar el repositorio.
@@ -32,5 +32,16 @@ Flujo de uso
   - Botón "Capturar foto": abre la cámara y muestra una miniatura al regresar.
 
 Notas
-- La foto capturada se maneja como miniatura en memoria (no se guarda archivo). Para guardar en almacenamiento.
-- Permisos usados: `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` y `CAMERA` (en tiempo de ejecución).
+- La foto capturada ahora se guarda como imagen de tamaño completo usando `FileProvider` y `EXTRA_OUTPUT`. Se muestra en la vista previa desde una `content://` URI segura.
+- Permisos usados: `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` y `CAMERA` (en tiempo de ejecución). Si el usuario los deniega permanentemente, se ofrece ir a Ajustes.
+
+Mejoras de seguridad implementadas
+- API Key externalizada en `strings.xml`; no se hardcodea en el Manifest.
+- Captura de cámara con `FileProvider` y `EXTRA_OUTPUT` para evitar exponer rutas de archivo.
+- `network_security_config` con `cleartextTrafficPermitted=false` para bloquear HTTP por defecto.
+- Manejo de permisos con racional (explicación previa) y opción de abrir Ajustes cuando se deniega permanentemente.
+- `android:exported="false"` en componentes sin `intent-filter`.
+
+Configuración necesaria
+- Reemplaza `REEMPLAZA_AQUI_TU_API_KEY` en `app/src/main/res/values/strings.xml`.
+- Si requieres HTTP para pruebas, ajusta `app/src/main/res/xml/network_security_config.xml` para permitir dominios específicos temporalmente.

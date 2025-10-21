@@ -1,15 +1,33 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Android/Gradle/IDE ignores
+
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Local configuration
 local.properties
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Logs and captures
+*.log
+captures/
+
+# APKs/Artifacts
+*.apk
+*.aab
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Signing keys (do not store in VCS)
+*.jks
+*.keystore
+
+# Misc
+/.VSCodeCounter/
