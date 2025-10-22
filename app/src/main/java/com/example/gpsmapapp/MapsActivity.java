@@ -171,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     intent.setData(Uri.parse("package:" + getPackageName()));
                     startActivity(intent);
                 } else {
-                    Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "permisos de ubicacion denegados", Toast.LENGTH_SHORT).show();
                 }
             }
         } else if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
