@@ -16,8 +16,8 @@ Aplicación Android que muestra un mapa de Google y permite añadir marcadores y
 - Red y tráfico claro.
   - Observación: `cleartextTrafficPermitted=false` está configurado; mantener y revisar endpoints externos para que todo sea HTTPS.
 
-- Reportes: `mobsf_reports/vulnerability_report.pdf` y JSON en `mobsf_reports/`.
-- Ver `vulnerabilities.md`. (Completar con resultados de MobSF)
+- Reportes: `mobsf_reports/vulnerability_report.pdf`.
+- Ver `vulnerabilities.md`.
 
 ## Mejoras Implementadas
 - API Key externalizada en `strings.xml`; no se hardcodea en el Manifest.
@@ -53,7 +53,3 @@ Aplicación Android que muestra un mapa de Google y permite añadir marcadores y
   - Pulsación larga: añade marcador en la posición.
   - Botón "Añadir marcador": coloca marcador en tu ubicación actual.
   - Botón "Capturar foto": abre la cámara y muestra miniatura al regresar.
-
-## Configuración necesaria
-- Reemplaza `REEMPLAZA_AQUI_TU_API_KEY` en `app/src/main/res/values/strings.xml`.
-- Si requieres HTTP para pruebas, ajusta `app/src/main/res/xml/network_security_config.xml` para permitir dominios específicos temporalmente.
