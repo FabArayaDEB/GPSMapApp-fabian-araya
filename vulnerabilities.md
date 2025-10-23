@@ -42,6 +42,67 @@
 - **Impacto:** Inconsistencias de seguridad si no está definido.
 - **correccion:** Definir la `permission` en `AndroidManifest.xml` con `protectionLevel="signature"` para uso interno, o eliminar si no se utiliza.
 
+## Código de mitigación ejemplificado
+
+- Solicitar permisos de ubicación de forma robusta:
+```java
+ActivityCompat.requestPermissions(this,
+    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+    LOCATION_PERMISSION_REQUEST_CODE);
+```
+
+- Habilitar ubicación cuando se conceda FINE o COARSE:
+```java
+if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+    mMap.setMyLocationEnabled(true);
+    getCurrentLocation();
+}
+```
+
+- Verificar permisos concedidos en `onRequestPermissionsResult`:
+```java
+boolean fineGranted = false, coarseGranted = false;
+for (int i = 0; i < permissions.length; i++) {
+    if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permissions[i])) {
+        fineGranted = grantResults.length > i && grantResults[i] == PackageManager.PERMISSION_GRANTED;
+    } else if (Manifest.permission.ACCESS_COARSE_LOCATION.equals(permissions[i])) {
+        coarseGranted = grantResults.length > i && grantResults[i] == PackageManager.PERMISSION_GRANTED;
+    }
+}
+if (fineGranted || coarseGranted) {
+    if (mMap != null) { mMap.setMyLocationEnabled(true); }
+    getCurrentLocation();
+} else {
+    boolean permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
+    // Abrir Ajustes si está denegado permanentemente
+}
+```
+
+- Uso seguro de FileProvider y limpieza de recursos de cámara:
+```java
+photoUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
+takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+// Tras usar la URI
+revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+// Limpieza si se cancela o falla
+if (photoFile != null && photoFile.exists()) { photoFile.delete(); }
+```
+
+- Política de red segura:
+```xml
+<application
+    android:usesCleartextTraffic="false"
+    android:networkSecurityConfig="@xml/network_security_config">
+```
+
+```xml
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>
+```
+
 ## Evidencias
 - PDF MobSF: `vulnerability_report.pdf`
 - Panel de MobSF: Exported Components (1 receiver), Application Permissions (6), App Score y firmas.
