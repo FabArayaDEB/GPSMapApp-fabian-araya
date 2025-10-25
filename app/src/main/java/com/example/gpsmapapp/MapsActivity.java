@@ -105,7 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Se requiere ubicación para mostrar tu posición en el mapa", Toast.LENGTH_LONG).show();
             }
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
@@ -138,6 +138,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setOnMapLongClickListener(this);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             getCurrentLocation();
@@ -159,10 +161,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mMap != null) {
-                    onMapReady(mMap);
+            boolean fineGranted = false;
+            boolean coarseGranted = false;
+            for (int i = 0; i < permissions.length; i++) {
+                if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permissions[i])) {
+                    fineGranted = grantResults.length > i && grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                } else if (Manifest.permission.ACCESS_COARSE_LOCATION.equals(permissions[i])) {
+                    coarseGranted = grantResults.length > i && grantResults[i] == PackageManager.PERMISSION_GRANTED;
                 }
+            }
+            if (fineGranted || coarseGranted) {
+                if (mMap != null) {
+                    mMap.setMyLocationEnabled(true);
+                }
+                getCurrentLocation();
             } else {
                 boolean permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
                 if (permanentlyDenied) {
@@ -171,22 +183,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     intent.setData(Uri.parse("package:" + getPackageName()));
                     startActivity(intent);
                 } else {
-                    Toast.makeText(this, "permisos de ubicacion denegados", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permisos de ubicación denegados", Toast.LENGTH_SHORT).show();
                 }
             }
         } else if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                boolean permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA);
-                if (permanentlyDenied) {
-                    Toast.makeText(this, "Permiso de cámara denegado permanentemente. Habilítalo en Ajustes", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.setData(Uri.parse("package:" + getPackageName()));
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -241,6 +245,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (photoUri != null && imgPreview != null) {
                 imgPreview.setImageURI(photoUri);
                 Toast.makeText(this, "Foto capturada", Toast.LENGTH_SHORT).show();
+                // Revoca permisos otorgados a la URI una vez usada.
+                revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else if (data != null) {
                 Bundle extras = data.getExtras();
                 if (extras != null) {
@@ -250,6 +256,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Toast.makeText(this, "Foto capturada", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            // Si la captura fue cancelada o fallida, limpiar recursos.
+            if (photoUri != null) {
+                revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+            if (photoFile != null && photoFile.exists()) {
+                photoFile.delete();
             }
         }
     }

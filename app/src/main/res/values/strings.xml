@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GPSMapApp</string>
-    <!-- Coloca aquí tu API Key de Google Maps.  evitar en Manifest. -->
+    <!-- insertar API Key de Google Maps.  se evita en Manifest. -->
     <string name="google_maps_key">AIzaSyBw9shTudZEgf3oFBq-tYE183EjUY1izts</string>
 </resources>
