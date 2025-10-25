@@ -5,7 +5,7 @@
 - App Score (MobSF): ver PDF
 - peligros: `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`, `CAMERA`, `INTERNET`, `ACCESS_NETWORK_STATE`
 - Certificado: firmado con keystore de debug (desarrollo)
-- Reportes: `mobsf_reports/vulnerability_report.pdf` y `reporte de vunerabilidades MobSF.pdf`
+- Reporte: `reporte de vunerabilidades MobSF.pdf`
 
 ## vulnerabilidades descubiertas por mobSF
 
@@ -31,7 +31,7 @@
 - **correcion:** Solicitar en runtime, iniciar captura solo por acción explícita del usuario, limpiar imágenes temporales.
 
 ### 4. Politica de tráfico en claro
-- **Descripcion:** Se observa `cleartextTrafficPermitted=false` (correcto). Mantener configuración.
+- **Descripcion:** Se observa `cleartextTrafficPermitted=false` bien configurado.
 - **Severidad:** baja.
 - **Impacto** Bloquea HTTP, obliga HTTPS; reducir superficie de MITM.
 - **correccion** Verificar endpoints externos, añadir `Network Security Config` por dominio si se requiere excepción temporal.
@@ -42,7 +42,7 @@
 - **Impacto:** Inconsistencias de seguridad si no está definido.
 - **correccion:** Definir la `permission` en `AndroidManifest.xml` con `protectionLevel="signature"` para uso interno, o eliminar si no se utiliza.
 
-## Código de mitigación ejemplificado
+## Código de modificado
 
 - Solicitar permisos de ubicación de forma robusta:
 ```java
@@ -105,6 +105,5 @@ if (photoFile != null && photoFile.exists()) { photoFile.delete(); }
 
 ## Evidencias
 - PDF MobSF: `vulnerability_report.pdf`
-- Panel de MobSF: Exported Components (1 receiver), Application Permissions (6), App Score y firmas.
-- Capturas de pantalla de MobSF (si aplica)
+- Capturas de pantalla de MobSF en el informe `vulnerability_report-fabianAraya`
 - reportes: `vulnerability_report.pdf`

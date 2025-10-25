@@ -8,7 +8,7 @@
 - **WebView seguro:** Desactivar JavaScript si no es necesario; bloquear `file://` y depuración.
 - **Permisos mínimos:** Revisar y reducir permisos declarados; pedir en tiempo de ejecución con rationale.
 
-## Cómo cada tip mejora la seguridad
+## como cada tip mejora la seguridad
 - Parámetros en consultas previenen inyección por entradas maliciosas.
 - Tokens y scopes limitan acceso y reducen impacto de credenciales expuestas.
 - HTTPS estricto evita espionaje y manipulación de tráfico.
